@@ -1,0 +1,5 @@
+CONCEPTS={'mathematics':['counting','measurement','geometry','algebra','probability'],'physics':['motion','force','energy','electricity','waves'],'computer_science':['logic','algorithms','data_structures','networks','artificial_intelligence'],'biology':['cells','genetics','evolution','ecology','homeostasis'],'engineering':['measurement','materials','mechanisms','control','design'],'history':['chronology','causality','primary_sources','institutions','change'],'english':['vocabulary','grammar','reading','writing','conversation']}
+from .db import connect
+def subject_path(subject):return CONCEPTS.get(subject.lower().replace(' ','_'),['observation','reasoning','communication'])
+def create_learning_event(subject):
+ c=connect();tick=c.execute('SELECT tick FROM world WHERE id=1').fetchone()[0];concept=subject_path(subject)[tick%len(subject_path(subject))];d=f'Learning challenge: investigate {concept} while solving a world problem in {subject}.';c.execute('INSERT INTO events(tick,kind,description) VALUES (?,?,?)',(tick,'learning',d));c.commit();c.close();return {'subject':subject,'concept':concept,'mode':'world_problem','description':d}
